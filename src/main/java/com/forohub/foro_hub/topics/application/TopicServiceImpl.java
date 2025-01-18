@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import com.forohub.foro_hub.courses.domain.entity.Course;
@@ -78,13 +79,13 @@ public class TopicServiceImpl implements TopicService {
 
     @Override
     @Transactional
-    public ResponseEntity<TopicFullResponse> update(@RequestBody @Valid UpdateTopicRequest data) {
+    public ResponseEntity<TopicFullResponse> update(@PathVariable Long id,@RequestBody @Valid UpdateTopicRequest data) {
          // Retrieve the existing topic by ID
-        Topic topic = topicRepository.findById(data.id())
-        .orElseThrow(() -> new IllegalArgumentException("Topic with ID " + data.id() + " not found"));
+        Topic topic = topicRepository.findById(id)
+        .orElseThrow(() -> new IllegalArgumentException("Topic with ID " + id + " not found"));
 
         // Check for duplicate title and message
-        boolean existsDuplicate = topicRepository.existsByTitleAndMessageAndIdNot(data.title(), data.message(), data.id());
+        boolean existsDuplicate = topicRepository.existsByTitleAndMessageAndIdNot(data.title(), data.message(), id);
         if (existsDuplicate) {
             throw new IllegalArgumentException("A topic with the same title and message already exists.");
         }

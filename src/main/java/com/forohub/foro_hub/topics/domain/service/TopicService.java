@@ -14,5 +14,5 @@ public interface TopicService {
 
     Page<TopicResponse> listAll(Pageable pageable);
 
-    ResponseEntity<TopicFullResponse> update(UpdateTopicRequest data);
+    ResponseEntity<TopicFullResponse> update(Long id,UpdateTopicRequest data);
 }

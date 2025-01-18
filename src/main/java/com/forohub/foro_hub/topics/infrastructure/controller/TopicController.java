@@ -5,6 +5,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -43,9 +44,9 @@ public class TopicController {
         return ResponseEntity.ok(topics);
     }
 
-    @PutMapping
+    @PutMapping("/{id}")
     @Transactional
-    public ResponseEntity<TopicFullResponse> update(@RequestBody @Valid UpdateTopicRequest data) {
-        return topicService.update(data);
+    public ResponseEntity<TopicFullResponse> update(@PathVariable Long id,@RequestBody @Valid UpdateTopicRequest data) {
+        return topicService.update( id, data);
     }
 }
