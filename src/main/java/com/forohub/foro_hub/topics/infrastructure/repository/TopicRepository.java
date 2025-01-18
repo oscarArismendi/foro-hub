@@ -6,4 +6,6 @@ import com.forohub.foro_hub.topics.domain.entity.Topic;
 
 public interface TopicRepository extends JpaRepository<Topic, Long> {
     boolean existsByTitleAndMessage(String title, String message);
+
+    boolean existsByTitleAndMessageAndIdNot(String title, String message, Long id);
 }

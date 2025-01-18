@@ -6,14 +6,18 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.forohub.foro_hub.topics.domain.dto.TopicFullResponse;
 import com.forohub.foro_hub.topics.domain.dto.TopicRequest;
 import com.forohub.foro_hub.topics.domain.dto.TopicResponse;
+import com.forohub.foro_hub.topics.domain.dto.UpdateTopicRequest;
 import com.forohub.foro_hub.topics.domain.service.TopicService;
 
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 
 @RestController
@@ -37,5 +41,11 @@ public class TopicController {
     public ResponseEntity<Page<TopicResponse>> listAll(Pageable pageable) {
         Page<TopicResponse> topics = topicService.listAll(pageable);
         return ResponseEntity.ok(topics);
+    }
+
+    @PutMapping
+    @Transactional
+    public ResponseEntity<TopicFullResponse> update(@RequestBody @Valid UpdateTopicRequest data) {
+        return topicService.update(data);
     }
 }

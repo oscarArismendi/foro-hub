@@ -3,18 +3,24 @@ package com.forohub.foro_hub.topics.application;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import com.forohub.foro_hub.courses.domain.entity.Course;
 import com.forohub.foro_hub.courses.infrastructure.repository.CourseRepository;
+import com.forohub.foro_hub.topics.domain.dto.TopicFullResponse;
 import com.forohub.foro_hub.topics.domain.dto.TopicRequest;
 import com.forohub.foro_hub.topics.domain.dto.TopicResponse;
+import com.forohub.foro_hub.topics.domain.dto.UpdateTopicRequest;
 import com.forohub.foro_hub.topics.domain.entity.Topic;
 import com.forohub.foro_hub.topics.domain.service.TopicService;
 import com.forohub.foro_hub.topics.infrastructure.repository.TopicRepository;
 import com.forohub.foro_hub.users.domain.entity.User;
 import com.forohub.foro_hub.users.infrastructure.repository.UserRepository;
 
+import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -68,6 +74,52 @@ public class TopicServiceImpl implements TopicService {
                                   topic.getMessage(),
                                   topic.getStatus()
                               ));
+    }
+
+    @Override
+    @Transactional
+    public ResponseEntity<TopicFullResponse> update(@RequestBody @Valid UpdateTopicRequest data) {
+         // Retrieve the existing topic by ID
+        Topic topic = topicRepository.findById(data.id())
+        .orElseThrow(() -> new IllegalArgumentException("Topic with ID " + data.id() + " not found"));
+
+        // Check for duplicate title and message
+        boolean existsDuplicate = topicRepository.existsByTitleAndMessageAndIdNot(data.title(), data.message(), data.id());
+        if (existsDuplicate) {
+            throw new IllegalArgumentException("A topic with the same title and message already exists.");
+        }
+        // Update the fields of the topic
+        topic.setTitle(data.title());
+        topic.setMessage(data.message());
+        topic.setStatus(data.status());
+
+        // Optional: If author or course is updated, retrieve and set them
+        if (data.authorId() != null) {
+        User author = userRepository.findById(data.authorId())
+                .orElseThrow(() -> new IllegalArgumentException("User with ID " + data.authorId() + " not found"));
+        topic.setAuthor(author);
+        }
+
+        if (data.courseId() != null) {
+        Course course = courseRepository.findById(data.courseId())
+                .orElseThrow(() -> new IllegalArgumentException("Course with ID " + data.courseId() + " not found"));
+        topic.setCourse(course);
+        }
+
+        // Save the updated topic
+        topic = topicRepository.save(topic);
+
+        // Map the updated topic to a TopicFullResponse
+        TopicFullResponse response = new TopicFullResponse(
+            topic.getTitle(),
+            topic.getMessage(),
+            topic.getStatus(),
+            topic.getAuthor().getId(),
+            topic.getCourse().getId()
+        );
+
+        // Return the response entity
+        return ResponseEntity.ok(response);
     }
 
 }
