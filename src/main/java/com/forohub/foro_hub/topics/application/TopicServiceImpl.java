@@ -1,6 +1,8 @@
 package com.forohub.foro_hub.topics.application;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.forohub.foro_hub.courses.domain.entity.Course;
@@ -56,4 +58,17 @@ public class TopicServiceImpl implements TopicService {
             savedTopic.getStatus()
         );
     }
+
+    @Override
+    public Page<TopicResponse> listAll(Pageable pageable) {
+        return topicRepository.findAll(pageable)
+                              .map(topic -> new TopicResponse(
+                                  topic.getId(),
+                                  topic.getTitle(),
+                                  topic.getMessage(),
+                                  topic.getStatus()
+                              ));
+    }
+
 }
+
