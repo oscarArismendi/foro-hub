@@ -139,5 +139,23 @@ public class TopicServiceImpl implements TopicService {
         return ResponseEntity.ok(response);
     }
 
+    @Override
+    public ResponseEntity<TopicResponse> deleteTopic(Long id) {
+         // Retrieve the existing topic by ID
+         Topic topic = topicRepository.findById(id)
+         .orElseThrow(() -> new IllegalArgumentException("Topic with ID " + id + " not found"));
+
+         TopicResponse response = new TopicResponse(
+            topic.getId(),
+            topic.getTitle(),
+            topic.getMessage(),
+            topic.getStatus()
+        );
+
+        topicRepository.deleteById(id);
+
+        return ResponseEntity.ok(response);
+    }
+
 }
 

@@ -17,4 +17,6 @@ public interface TopicService {
     ResponseEntity<TopicFullResponse> update(Long id,UpdateTopicRequest data);
 
     ResponseEntity<TopicResponse> findTopic(Long id);
+
+    ResponseEntity<TopicResponse> deleteTopic(Long id);
 }

@@ -4,6 +4,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -53,6 +54,13 @@ public class TopicController {
     @GetMapping("/{id}")
     public ResponseEntity<TopicResponse> findTopic(@PathVariable Long id) {
         ResponseEntity<TopicResponse> response = topicService.findTopic(id);
+        return response;
+    }
+
+    @DeleteMapping("/{id}")
+    @Transactional
+    public ResponseEntity<TopicResponse> deleteTopic(@PathVariable Long id) {
+        ResponseEntity<TopicResponse> response = topicService.deleteTopic(id);
         return response;
     }
 }
