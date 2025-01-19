@@ -123,5 +123,21 @@ public class TopicServiceImpl implements TopicService {
         return ResponseEntity.ok(response);
     }
 
+    @Override
+    public ResponseEntity<TopicResponse> findTopic(Long id) {
+         // Retrieve the existing topic by ID
+         Topic topic = topicRepository.findById(id)
+         .orElseThrow(() -> new IllegalArgumentException("Topic with ID " + id + " not found"));
+
+         TopicResponse response = new TopicResponse(
+            topic.getId(),
+            topic.getTitle(),
+            topic.getMessage(),
+            topic.getStatus()
+        );
+
+        return ResponseEntity.ok(response);
+    }
+
 }
 

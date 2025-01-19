@@ -49,4 +49,10 @@ public class TopicController {
     public ResponseEntity<TopicFullResponse> update(@PathVariable Long id,@RequestBody @Valid UpdateTopicRequest data) {
         return topicService.update( id, data);
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<TopicResponse> findTopic(@PathVariable Long id) {
+        ResponseEntity<TopicResponse> response = topicService.findTopic(id);
+        return response;
+    }
 }
