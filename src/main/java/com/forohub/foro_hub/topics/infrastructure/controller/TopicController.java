@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.forohub.foro_hub.topics.domain.dto.TopicFullResponse;
@@ -39,16 +40,19 @@ public class TopicController {
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
-     @GetMapping
-    public ResponseEntity<Page<TopicResponse>> listAll(Pageable pageable) {
+    @GetMapping
+    public ResponseEntity<Page<TopicResponse>> listAll(@RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sort,
+            Pageable pageable) {
         Page<TopicResponse> topics = topicService.listAll(pageable);
         return ResponseEntity.ok(topics);
     }
 
     @PutMapping("/{id}")
     @Transactional
-    public ResponseEntity<TopicFullResponse> update(@PathVariable Long id,@RequestBody @Valid UpdateTopicRequest data) {
-        return topicService.update( id, data);
+    public ResponseEntity<TopicFullResponse> update(@PathVariable Long id, @RequestBody @Valid UpdateTopicRequest data) {
+        return topicService.update(id, data);
     }
 
     @GetMapping("/{id}")
